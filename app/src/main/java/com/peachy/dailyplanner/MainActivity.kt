@@ -49,13 +49,15 @@ class MainActivity : Activity() {
 
         val nav = LinearLayout(this)
         nav.gravity = Gravity.CENTER
-        listOf("Home", "Tasks", "Notes", "Trackers", "More").forEach {
+
+        listOf("Home", "Tasks", "Notes", "Trackers", "More").forEach { item ->
             val b = Button(this)
-            b.text = it
+            b.text = item
             b.textSize = 10f
-            b.setOnClickListener { openPage(it) }
+            b.setOnClickListener { openPage(item) }
             nav.addView(b, LinearLayout.LayoutParams(0, -2, 1f))
         }
+
         root.addView(nav)
         setContentView(root)
     }
@@ -82,6 +84,7 @@ class MainActivity : Activity() {
         setup("Lavender Dream")
         heading("✨ Welcome to your happy space!")
         heading("Your planner, your way 💜")
+
         button("📝 Daily Tasks") { openPage("Tasks") }
         button("📅 Calendar") { openPage("Calendar") }
         button("💌 My Notes") { openPage("Notes") }
@@ -92,6 +95,7 @@ class MainActivity : Activity() {
         button("😊 Mood Tracker") { openPage("Mood") }
         button("🎂 Birthdays") { openPage("Birthdays") }
         button("🎨 Themes & Wallpaper") { openPage("Themes") }
+
         heading("💜 Made with love")
     }
 
@@ -115,61 +119,79 @@ class MainActivity : Activity() {
 
     private fun showTasks() {
         setup("My Daily Tasks")
+
         val input = EditText(this)
         input.hint = "Write a task..."
         content.addView(input)
+
         button("＋ Add My Task") {
             val value = input.text.toString().trim()
             if (value.isNotEmpty()) {
                 addSaved("tasks", value)
-                input.text.clear()
                 showTasks()
             }
         }
+
         heading("Your saved tasks")
         showSaved("tasks", true)
     }
 
     private fun showNotes() {
         setup("My Notes")
+
         val input = EditText(this)
         input.hint = "Write your notes here..."
         input.minLines = 3
         content.addView(input)
+
         button("Save Note 💌") {
             val value = input.text.toString().trim()
             if (value.isNotEmpty()) {
                 addSaved("notes", value)
-                input.text.clear()
                 showNotes()
             }
         }
+
         showSaved("notes", false)
     }
 
     private fun showSaved(key: String, checkable: Boolean) {
         val array = getArray(key)
+
         for (i in 0 until array.length()) {
             val item = array.optString(i)
+
             val row = LinearLayout(this)
             row.orientation = LinearLayout.HORIZONTAL
+
             val text = TextView(this)
             text.text = item
             text.textSize = 16f
             text.setTextColor(dark)
+
             row.addView(text, LinearLayout.LayoutParams(0, -2, 1f))
+
             if (checkable) {
                 val check = CheckBox(this)
                 check.text = "Done"
                 row.addView(check)
             }
+
             val delete = Button(this)
             delete.text = "✕"
+
             delete.setOnClickListener {
-                array.remove(i)
-                prefs.edit().putString(key, array.toString()).apply()
-                if (key == "tasks") showTasks() else showNotes()
+                val updated = getArray(key)
+                updated.remove(i)
+                prefs.edit().putString(key, updated.toString()).apply()
+
+                if (key == "tasks") {
+                    showTasks()
+                } else {
+                    showNotes()
+                }
             }
+
             row.addView(delete)
             content.addView(row)
         }
@@ -192,17 +214,19 @@ class MainActivity : Activity() {
     private fun showSimple(title: String, message: String) {
         setup(title)
         heading(message)
+
         val input = EditText(this)
         input.hint = "Add something..."
         content.addView(input)
+
         button("Save 💜") {
             val value = input.text.toString().trim()
             if (value.isNotEmpty()) {
                 addSaved(title, value)
-                input.text.clear()
                 showSimple(title, message)
             }
         }
+
         showSaved(title, false)
     }
 
@@ -225,18 +249,22 @@ class MainActivity : Activity() {
     private fun showThemes() {
         setup("Themes & Wallpaper")
         heading("Choose your planner background")
+
         button("💜 Lavender Dream") {
             prefs.edit().putString("theme", "lavender").apply()
             Toast.makeText(this, "Lavender Dream selected!", Toast.LENGTH_SHORT).show()
         }
+
         button("🌸 Peach Pink") {
             prefs.edit().putString("theme", "pink").apply()
             Toast.makeText(this, "Peach Pink selected!", Toast.LENGTH_SHORT).show()
         }
+
         button("🤍 Soft Cream") {
             prefs.edit().putString("theme", "cream").apply()
             Toast.makeText(this, "Soft Cream selected!", Toast.LENGTH_SHORT).show()
         }
+
         heading("🌷 Stickers, fonts and wallpaper")
         heading("More customization coming soon!")
     }
