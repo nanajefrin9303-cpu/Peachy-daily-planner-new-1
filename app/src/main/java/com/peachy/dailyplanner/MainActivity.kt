@@ -7,7 +7,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
-import android.widget.*
+import android.widget.
+*import org.json.JSONArray
 
 class MainActivity : Activity() {
     private val purple = Color.rgb(135, 105, 190)
